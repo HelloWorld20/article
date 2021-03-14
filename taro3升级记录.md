@@ -225,7 +225,6 @@ webpack会把引用了两次以上的css文件合并打包到common.wxss里，�
 
 # eslint配置
 
-```json
 module.exports = {
   env: {
     browser: true,
@@ -286,8 +285,8 @@ module.exports = {
     'linebreak-style': ['error', 'unix'],
     'jsx-a11y/click-events-have-key-events': 'off',
     'jsx-a11y/no-static-element-interactions': 'off',
-    'react-hooks/rules-of-hooks': 'off', // TODO： 改为error
-    'react-hooks/exhaustive-deps': 'off', // TODO： 改为error
+    'react-hooks/rules-of-hooks': 1,
+    'react-hooks/exhaustive-deps': 1,
     'react/jsx-wrap-multilines': 'off',
     'react/jsx-filename-extension': 'off',
     'react/jsx-props-no-spreading': 'off',
@@ -303,8 +302,9 @@ module.exports = {
     'no-void': 'off', // TODO: 看看之后有没有办法修改掉
     'no-plusplus': 'off',
     'class-methods-use-this': 'off', // TODO: 有没有必要限制？
-    'react/jsx-closing-bracket-location': 'off', // TODO: 与prettier冲突
-    'react/jsx-boolean-value': 'off', // TODO: 冲突，自动格式化时与prettier冲突
+    'react/jsx-closing-bracket-location': 'off', // prettier冲突
+    'react/jsx-boolean-value': 'off', // prettier冲突
+    'react/jsx-curly-newline': 'off', // prettier冲突
     '@typescript-eslint/no-empty-function': [
       'error',
       {
@@ -340,6 +340,7 @@ module.exports = {
     ],
   },
 };
+
 
 ```
 
