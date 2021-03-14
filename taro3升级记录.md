@@ -193,6 +193,32 @@ Taro1不能，Taro3可以！！！
 webpack会把引用了两次以上的css文件合并打包到common.wxss里，并放到跟目录，并且在app.less统一引入。如果源码中没有创建app.less文件，则Taro3也不会创建新的，统一引用common.wxss，所以会导致全局样式没有引用的问题。
 
 
+## 引入原生小程序代码
+
+不再能用ref获取原生小程序代码写的组件
+
+需改用[selectComponent](http://taro-docs.jd.com/taro/docs/mini-third-party#selectcomponent)获取小程序组件实例。且有个bug，再componentDidMount生命周期中获取会失败。一般循环延迟获取。
+
+	import { getCurrentInstance } from '@tarojs/taro'
+
+	
+	const timer = setInterval(() => {
+		const { page } = getCurrentInstance()
+		const el = page.selectComponent('#mychart-dom-area')
+		if (el) {
+			clearInterval(timer);
+			this.el = el;
+		}
+	})
+
+且，每个用到原生组件的组件与页面都需要`usingComponents`
+
+如page1 => component1 => raw-component1
+
+则page1和component1的配置文件都需要配置usingComponents
+
+
+
 # 遗留问题
 
 1. eslint与prettier冲突
