@@ -1,7 +1,7 @@
 ---
 title: 使用express搭建文件上传服务器遇到的坑
 date: 2017-04-11 13:26:07
-tags: [node.js]
+tags: [node]
 ---
 
 # 说明
