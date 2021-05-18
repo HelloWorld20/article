@@ -1,5 +1,5 @@
 ---
-title: git的使用傻瓜版
+title: git的使用总结
 date: 2017-11-05 09:20:07
 tags: [git]
 ---
@@ -35,3 +35,38 @@ tags: [git]
 或
 
 	git reset HEAD~3 --hard
+	
+## [cherry-pick多个](http://www.ruanyifeng.com/blog/2020/04/git-cherry-pick.html)
+
+cherry-pick可以直接把某个commit直接复制到当前分支。非常灵活。
+
+	git cherry-pick \<hash\>
+
+也可以同时cherry-pick多个，语法是：
+
+	cherry-pick \<hash1> \<hash2>
+
+或者范围cherry-pick
+
+	cherry-pick \<hash1>..\<hash2>
+
+意思是，从hash1到hash2的commit都按顺序cherry-pick过来（不包含hash1）。如需包含则
+
+	cherry-pick \<hash1>^..\<hash2>
+	
+注意，hash1必须比hash2早。不然会失败。
+
+命令会一个一个pick过来。如遇到冲突，须解决冲突然后再`cherry-pick --continue`继续pick
+
+## gitignore已经关联了的文件
+
+	git rm --cached [filepath]
+
+git rm 命令的功能是删除某个文件且添加到暂存区。之后便也不在关联此文件。换个意思就是，从git中把某个文件删除，并且也移除真实文件。
+效果同
+
+	rm [filepath]
+	
+	git add [filepath]
+
+加上`--cached`参数，则是，把某个已关联的文件删除，且放到暂存区，但是不影真实文件。那么效果就是，从git中移除某个文件的关联。
