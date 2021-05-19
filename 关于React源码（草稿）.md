@@ -62,6 +62,10 @@ layout阶段（执行DOM操作后）
 
 ## ReactDOM.render
 
+首次调用render，会给传入的container添加一个参数:\_reactRootContainer。然后下面又有个:\_internalRoot，这个对象包含着所谓的`fiberRootNode`，是整个应用的根节点。
+
+fiberRootNode的current参数，存储着这个应用的fiber链表的第一个节点。
+
 ## fiber
 
 ## Update
