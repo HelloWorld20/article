@@ -9,9 +9,7 @@ tags:
 
 最近尝试学习React的源码，学习阶段，先建个草稿，记录片段。
 
-# 重要学习资料
 
-[React技术揭秘-卡颂](https://react.iamkasong.com/)
 
 
 # 正文
@@ -66,8 +64,16 @@ layout阶段（执行DOM操作后）
 
 fiberRootNode的current参数，存储着这个应用的fiber链表的第一个节点。
 
+此时的fiber节点还是树状结构，也就是传说中的`虚拟dom`
+
+
+
 ## fiber
 
 ## Update
 
 ## Hook
+
+# 链接
+
+[React技术揭秘-卡颂](https://react.iamkasong.com/)

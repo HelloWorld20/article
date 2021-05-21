@@ -9,11 +9,7 @@ tags: [babel,总结]
 
 <!-- more -->
 
-# 链接
 
-[官方文档](https://babel.docschina.org/docs/en/babel-preset-env/)
-
-[翻译文档](https://juejin.cn/post/6844903937900822536)
 
 # 正文
 
@@ -42,9 +38,9 @@ tags: [babel,总结]
 	},
 ```
 
-Object.values会被转义掉，能正常访问，包大小为: 2025kb
+Object.values会被转义掉，能正常访问，包大小为: `2025kb`
 
-如果targets.chrome改为54。则没有转义，不能正常访问，包大小: 2022kb
+如果targets.chrome改为54。则没有转义，不能正常访问，包大小: `2022kb`
 
 结论是，如果兼容越旧，就需要更多的polyfill来兼容，就会使得包更大。
 
@@ -68,10 +64,19 @@ Object.values会被转义掉，能正常访问，包大小为: 2025kb
 * ”entry“：在项目入口，按需引入
 * false：不引入core-js
 
-亲测，core-js都去除掉，可以从2022kb(chrome54版本)降低到2004kb
+亲测，core-js都去除掉，可以从`2022kb`(chrome54版本)降低到`2004kb`
 
 ### corejs
 
 参数有2、3，应该指定corejs的版本。作用不大。
+
+如果useBuildIns设置为false，则不会引入core-js，targets的设置也会失效。就不能精细的根据浏览器版本来转义代码。
+
+
+# 链接
+
+[官方文档](https://babel.docschina.org/docs/en/babel-preset-env/)
+
+[翻译文档](https://juejin.cn/post/6844903937900822536)
 
   [1]: https://jianghong.site/2021/04/16/%E5%81%9A%E8%BF%87%E6%9C%89%E4%BB%B7%E5%80%BC%E7%9A%84%E5%92%8C%E8%A1%8C%E8%83%BD%E4%BC%98%E5%8C%96/#%E8%A7%A3%E5%86%B3%E5%B0%8F%E7%A8%8B%E5%BA%8FPC%E7%AB%AF%E7%99%BD%E5%B1%8F%E7%9A%84%E9%97%AE%E9%A2%98
