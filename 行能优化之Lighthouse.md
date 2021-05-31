@@ -22,11 +22,11 @@ Lighthouse是Google开源的一个前端项目“体检”工具。一共有四�
 
 “体检报告”分为（性能）Performance、（可访问）Accessibility、（最佳实践）Best Practices、SEO、Progressive Web App五个维度打分，因为我测试的页面没有启用PWA，所以关注前四项即可。
 
-![几个维度总分](./images/1621763314859.png)
+![几个维度总分](https://my-bucket-hexo-1258538316.cos.ap-guangzhou.myqcloud.com/typora/202105/30/163142-938623.png)
 
 ## Performance的六个指标
 
-![enter description here](./images/1621763875412.png)
+![image-20210530163213127](https://my-bucket-hexo-1258538316.cos.ap-guangzhou.myqcloud.com/typora/202105/30/163213-901084.png)
 
 Google 通过相当深入的研究，总结出以下六项指标，能够比较好的反应出网站的性能好坏。这个维度一般测量的是网页从按下回车到完整渲染出来的时间的评分，会受到很多因素影响，比如机器性能、网络速度，服务器距离、网页内容等等，所以一般很难拿到满分
 
@@ -39,7 +39,7 @@ Google 通过相当深入的研究，总结出以下六项指标，能够比较�
 所以主要优化点是，网络的请求速度、服务器响应速度、资源（js、css）等。
 
 
-![enter description here](./images/1621765357203.png)
+![image-20210530163229479](https://my-bucket-hexo-1258538316.cos.ap-guangzhou.myqcloud.com/typora/202105/30/163231-210366.png)
 
 
 ### Speed Index
