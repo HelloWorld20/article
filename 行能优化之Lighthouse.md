@@ -1,11 +1,11 @@
 ---
-title: 行能优化之Lighthouse
+title: 性能优化之Lighthouse
 date: 2021-05-21 18:04:21
 tags: 
     - [优化,前端]
 ---
 
-最近我的业务一大方向是优化，加之行能优化可能是前端进阶一个重要过程。所以最近看了看行能优化相关的东西。第一个先说说Chrome devtools的Lighthouse
+最近我的业务一大方向是优化，加之性优化可能是前端进阶一个重要过程。所以最近看了看性能优化相关的东西。第一个先说说Chrome devtools的Lighthouse
 
 # 正文
 
