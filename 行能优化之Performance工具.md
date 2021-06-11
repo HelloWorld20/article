@@ -69,7 +69,7 @@ CPU的火焰图，横轴是时间，纵轴是函数调用栈。越长说明函�
 
 ![CPU火焰图](https://my-bucket-hexo-1258538316.cos.ap-guangzhou.myqcloud.com/typora/202106/06/205748-571775.png)
 
-有写Task块右上角会有个鲜红色的小三角，意思是，该宏任务执行时间过长，后半部分红色的斜线覆盖的区域，则是超时的部分。Chrome把执行超过50ms的Task都标记为超时的任务。如果是在`FCP`和`TTI`之间的超时Task时间的总和，是LightHouse体检项目的一个重要的指标：`Total Blocking Time（TBT）`
+有些Task块右上角会有个鲜红色的小三角，意思是，该宏任务执行时间过长，后半部分红色的斜线覆盖的区域，则是超时的部分。Chrome把执行超过50ms的Task都标记为超时的任务。如果是在`FCP`和`TTI`之间的超时Task时间的总和，是LightHouse体检项目的一个重要的指标：`Total Blocking Time（TBT）`
 
 所以，如果要性能优化，需要关注以下这些超时的Task。
 
@@ -104,9 +104,27 @@ CPU的火焰图，横轴是时间，纵轴是函数调用栈。越长说明函�
 
 ## Timing
 
+包含几个关键的时间点：
+
+* First Paint：触发节点不详
+* First Content Paint：触发节点不详
+* Largest Content Paint：无法定位，根据实际情况，可能位置不一样
+* DomContentLoaded Event：好像此点紧挨在在一长块`Parse HTML`之后
+* Onload Event：触发在众多图片资源中加载时间最长一个的后面不远处
+
+DomContentLoaded是否有等待css加载且渲染完成才触发？看面板是。那岂不是和字面意义违背？有空看下window.performance对象
+
 ## Network
 
+更详细的网络资源瀑布图。
+
+
+
+（貌似自己刷新没用，资源会走缓存。得从LightHouse入口进入才行）
+
 ## Frames
+
+貌似和js执行没关系？
 
 ## Raster
 
