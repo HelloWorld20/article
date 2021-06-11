@@ -1,6 +1,6 @@
 ---
 title: 性能优化之Performance工具
-date: 2021-06-06 18:04:21
+date: 2021-06-03 10:21
 tags: [优化,前端]
 ---
 
@@ -149,7 +149,15 @@ DomContentLoaded是否有等待css加载且渲染完成才触发？看面板是�
 
 [Chrome Performance 页面性能分析指南-知乎](https://zhuanlan.zhihu.com/p/163474573)
 
-https://www.cnblogs.com/xiaohuochai/p/9182710.html
 
 [官方-渲染流程](https://developers.google.com/web/fundamentals/performance/rendering)
 
+https://www.cnblogs.com/xiaohuochai/p/9182710.html
+
+
+
+[阮一峰-如何读懂火焰图](http://ruanyifeng.com/blog/2017/09/flame-graph.html)
+
+
+
+[Google官方Chrome DevTools文档](https://developer.chrome.com/docs/devtools/)
