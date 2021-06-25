@@ -28,11 +28,12 @@ performance工具分为这么几个大块
 设置面板可以说的有几个：
 
 * 最左侧的小圆点：从当前开始录制性能，手动点击结束截至
-* 刷新按钮：点击后，该工具会等待用户刷新页面。然后从前一页面卸载之前一段时间到页面触发onLoad之后的一段时间
+* 刷新按钮：点击后，该工具会等待用户刷新页面。然后从前一次刷新到此次刷新页面触发onLoad之后的一段时间
 * Memory：显示捕获的内存信息
 * Web Vitals：显示页面几个关键点的健康与否
 * 垃圾桶按钮：手动触发垃圾回收（GC）
 * Network与CPU，手动控制网络与CPU的节流
+* Disabled Javascript samples: JS火焰图里隐藏s调用栈
 
 # 摘要
 
@@ -112,7 +113,7 @@ CPU的火焰图，横轴是时间，纵轴是函数调用栈。越长说明函�
 * DomContentLoaded Event：好像此点紧挨在在一长块`Parse HTML`之后
 * Onload Event：触发在众多图片资源中加载时间最长一个的后面不远处
 
-DomContentLoaded是否有等待css加载且渲染完成才触发？看面板是。那岂不是和字面意义违背？有空看下window.performance对象
+*亲测，DOMContentLoaded会等待css加载完毕才会触发。应该是Chrome为了优化，防止页面出现未经css渲染的样式。*
 
 ## Network
 
@@ -127,6 +128,14 @@ DomContentLoaded是否有等待css加载且渲染完成才触发？看面板是�
 貌似和js执行没关系？
 
 ## Raster
+
+Raster意思是栅格，rasterize paint，则是栅格化渲染。顾名思义，就是把内容填充像素的过程。
+
+目前看到有两种`块`：Image Decode和Rasterize Paint
+
+点击Image Decode可以看到正在decode的是哪个图片，只会decode页面中看见的图片。所以可以通过这个来 debug，哪些图片消耗渲染资源。
+
+Image Decode只会处理出现在视图中的图片。
 
 ## Interactions
 
@@ -149,7 +158,6 @@ DomContentLoaded是否有等待css加载且渲染完成才触发？看面板是�
 
 [Chrome Performance 页面性能分析指南-知乎](https://zhuanlan.zhihu.com/p/163474573)
 
-
 [官方-渲染流程](https://developers.google.com/web/fundamentals/performance/rendering)
 
 https://www.cnblogs.com/xiaohuochai/p/9182710.html
@@ -160,4 +168,4 @@ https://www.cnblogs.com/xiaohuochai/p/9182710.html
 
 
 
-[Google官方Chrome DevTools文档](https://developer.chrome.com/docs/devtools/)
+[Google官方Chrome DevTools文档](https://developer.chrome.com/docs/devtools/evaluate-performance/reference/)
