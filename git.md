@@ -82,4 +82,7 @@ git add [filepath]
 
 每次都忘记！！！有机会详细解释一下git remote
 
-	git remote add origin git@github.com:[username]/[resposaryName].git
+```shell
+git remote add origin git@github.com:[username]/[resposaryName].git
+```
+
