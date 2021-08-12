@@ -148,12 +148,10 @@ function handlePalidrom(s, l, r, dp) {
 }
 ```
 
-// 理论上还能推出终极动态规划写法，有空再写。
-
 ## 总结
 
 1. 回文字符串天生就是一个可以拆分成子问题的问题，动态规划是个不二之选。寻找好递推关系还是重中之重。
-2. 中心扩散法貌似是最长回文问题的特殊方法，是比动态规划更优的解法。需要特殊对待
+2. 中心扩散法貌似是最长回文问题的特殊方法。但其实应该也就是动态规划，的终极形态。
 
 # 缺失的第一个正数
 
@@ -242,14 +240,12 @@ var firstMissingPositive = function (nums) {
   // 最后走一遍，如果是负数，则原来存在于数组、非0则不存在，则是要找的结果。如果都是负数，则结果是len
   for (let i = 0; i < len; i++) {
     const val = tmpArr[i];
-
     // 没被标记
     if (val > 0 || val === null) {
       result = i + 1;
       return result;
     }
   }
-
   return result;
 };
 ```
@@ -341,7 +337,7 @@ console.log(faltObject(input));
 ## 总结
 
 1. 写算法就不用要求写pure function。可以的话用全局变量可以简化一些逻辑。
-2. `Object.entries()` +` for(let [key, value] of entries)`是个更好的遍历对象的方法，可以替代`Object.keys().forEach()`
+2.  `for(let [key, value] of Object.entries())`是个更好的遍历对象的方法，可以替代`Object.keys().forEach()`
 3. 不用考虑得太复杂，一开始就封装了个isObject。而实际情况，直接`typeof xx === 'object'`就差不多了。
 
 
