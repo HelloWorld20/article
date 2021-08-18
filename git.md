@@ -86,3 +86,11 @@ git add [filepath]
 git remote add origin git@github.com:[username]/[resposaryName].git
 ```
 
+## diff不同分支的代码
+
+还是很有用的方法，常见的是diff prod与test，看看是否有代码忘记上线。
+
+```shell
+git diff branch1 branch2 [file]
+```
+第三个参数可以是文件夹，也可以是文件。也可以不填。
