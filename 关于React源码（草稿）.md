@@ -25,8 +25,25 @@ React更新时会分为两个阶段[render阶段与commit阶段](https://github.
 在render阶段，React将更新应用于通过setState或render方法触发的组件，并确定需要在用户屏幕上做哪些更新--哪些节点需要插入，更新或删除，哪些组件需要调用其生命周期方法。最终的这些更新信息被保存在一个叫`effect list`的fiber 节点树上。当然，在首次渲染时，React不需要产生任何更新信息，而是会给每个从render方法返回的element生成一个fiber节点，最终生成一个fiber节点树， 后续的更新也是复用了这棵fiber树。
 
  render阶段被标记为纯的、没有副作用的，可能会被React暂停、终止或者重新执行。也就是说，React会根据产生的任务的优先级，安排任务的调度（schedule）。利用类似requestIdleCallback的原理在浏览器空闲阶段进行更新计算，而不会阻塞动画，事件等的执行。
- 
+
  render阶段开始与`beginWork`，终止与`completeWork`
+
+#### 遍历过程
+
+React会从根节点开始往子节点遍历。处理完当前节点后，会以一下顺序往下遍历
+
+1. 是否有子节点，如果有，则下一条子节点
+2. 是否有兄弟节点，如果有，则下一条兄弟节点
+3. 是否有父节点（return），只有根节点没有父节点。
+
+####  beginWork
+
+[beginWork-kasong](https://kasong.gitee.io/just-react/process/beginWork.html#%E6%96%B9%E6%B3%95%E6%A6%82%E8%A7%88)
+
+beginWork发生于遍历到节点时。beginWork分为两种情况。mount或者是update时（根据current是否等于null）
+
+update: 会根据diff算法。判断current fiber的`子节点`是否能复用。如能，则复用节点，不能则重新创建。
+mount：则会根据类型重新创建`子fiber节点`。
 
 ### commit阶段
 
@@ -50,11 +67,17 @@ commit阶段会遍历effect list，把所有更新都commit到DOM树上。具体
 
 #### commit阶段的三个流程
 
-before mutation阶段（执行DOM操作前）
+##### before mutation阶段（执行DOM操作前）
 
-mutation阶段（执行DOM操作）
+调用`getSnapshotBeforeUpdate`。commit是同步的，所以不会存在componentWillXXX可能会调用多次的问题
 
-layout阶段（执行DOM操作后）
+此处`异步`调用useEffect，（原处变量名为`flushPassiveEffects`）
+
+##### mutation阶段（执行DOM操作）
+
+##### layout阶段（执行DOM操作后）
+
+
 
 ## React.createElement
 
@@ -74,6 +97,13 @@ fiberRootNode的current参数，存储着这个应用的fiber链表的第一个�
 
 ## Hook
 
+### useEffect的触发时机
+
+1. 在`commit阶段中的 before mutation阶段`，在`scheduleCallback`中调度`flushhPassiveEffects`
+2. `commit阶段中的layout阶段`之后，将`effectList`赋值给`rootWithPendingPassiveEffects`
+3. `scheduleCallback回调`触发`flushPassiveEffects`，`flushPassiveEffects`内部遍历`rootWithPendingPassiveEffects`
+
 # 链接
 
 [React技术揭秘-卡颂](https://react.iamkasong.com/)
+
