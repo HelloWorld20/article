@@ -1,10 +1,7 @@
 ---
 title: 关于React源码学习（草稿）
 date: 2020-11-21 17:05:24
-categories: 
-    - 总结,React
-tags: 
-    - 总结,React
+tags: [总结,React]
 ---
 
 最近尝试学习React的源码，学习阶段，先建个草稿，记录片段。

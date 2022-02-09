@@ -1,8 +1,7 @@
 ---
 title: 记自己从零创建的的monorepo心得
 date: 2021-03-10 14:13:48
-tags: 
-    - [总结,yarn, workspace,monorepo]
+tags: [总结,yarn, workspace,monorepo]
 ---
 
 # 前言

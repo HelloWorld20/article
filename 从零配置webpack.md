@@ -1,8 +1,7 @@
 ---
 title: 从零配置webpack4
 date: 2018-10-09 09:59:16
-tags: 
-		- [总结, webpack] 
+tags: [总结, webpack] 
     
 ---
 
