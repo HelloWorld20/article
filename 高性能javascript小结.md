@@ -1,12 +1,7 @@
 ---
 title: 高性能javascript小结
 date: 2015-10-26 10:49:03
-categories: 
-	- 书籍
-    - 读后感
-tags: 
-    - 读后感
-    - javascript
+tags: [读后感,JavaScript]
 ---
 
 # 高性能javascript小结

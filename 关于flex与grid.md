@@ -1,12 +1,7 @@
 ---
 title: 关于flex与grid的理解
 date: 2019-04-21 18:03:03
-categories: 
-	- css
-    - 技术总结
-tags: 
-    - css
-    - 技术总结
+tags: [css,总结]
 ---
 # flex
 

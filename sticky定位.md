@@ -1,12 +1,7 @@
 ---
 title: 关于css的sticky
 date: 2020-04-18 13:22:48
-categories: 
-	- css
-    - 技术总结
-tags: 
-    - css
-    - 技术总结
+tags: [css,总结]
 ---
 
 工作中要实现一个这样的效果，找来找去，找到了张鑫旭大神实现的sticky title的demo。虽然posotion:sticky并没有办法实现我需要的效果，但是觉得看完sticky的定位效果确实比我之前想象的有意思（至少我没想到position:sticky可以实现多个sticky title，并且后者会把前者网上顶的效果），所以记下，方便以后回顾。
