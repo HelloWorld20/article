@@ -82,7 +82,9 @@ Z = closepath
 
 	SVGGeometryElement.getPointAtLength(distance: number): DOMPoint
 	
-	
+如其名，通过Length获取点（坐标）。其值只能是该svg范围内。如果超出，返回的是最大点或最小点
+
+*注意此坐标是svg viewBox标记的二维坐标系，不是真实的屏幕坐标*
 
 ### stroke-width
 
@@ -109,15 +111,93 @@ Z = closepath
 
 ### 动态计算d参数
 
-## tweenjs
-
 ## 缓动函数
+
+
+
+这次有个需求：
+
+	应该是1%-78%-88%-99这%样的节奏分布在整个时间段内。如设置3s最短时间。前1s进度1%-78%。第2s78-88%。最后1秒。88%-99%。
+
+本质上就是要自己实现一个缓动函数。
+
+缓动函数大家常见的就是linear、ease、ease-in-out之类的，
+
+当需要自己实现一个缓动函数，起实也很简单。
+
+缓动函数图像起实就是一个横坐标为1、纵坐标也是1的函数图像，缓动函数内部需要做的就是实现这个函数图像对应的函数。
+
+举例子，linear在函数图像上就是范围是0~1的一个一个斜率为1的一元一次方程
+
+	f(x) = x; // x <= 1 && x >= 0;
+	
+所以方法也很简单
+
+```javascript
+function Linear(amount) {
+	return amount;
+}
+```
+
+所以需求的缓动函数应该是
+
+```javascript
+function MockLoadingEasing(amount: number): number {
+ const k1 = 2.34;
+ const k2 = 0.3;
+ const k3 = 0.36;
+ if (amount <= 0.33) {
+ 	return amount * k1;
+ }
+ const phase1 = 0.33 * k1;
+ if (amount > 0.33 && amount < 0.67) {
+ 	const phase2 = (amount - 0.33) * k2;
+ 	return phase1 + phase2;
+ }
+
+ const phase2 = 0.33 * k2;
+ const phase3 = (amount - 0.67) * k3;
+ return phase1 + phase2 + phase3;
+}
+```
+
+### tweenjs
 
 ## 路径跟随
 
+需求中还有个需求是，其他元素也能跟着svg的进度走。不仅仅是svg能动就行。根据调研，了解到`getPointAtLength`以及`getTotalLength`两个方法，可以根据“进度”动态的获取到svg进度的位置。
+
+难度不大，要注意svg坐标与屏幕坐标转换就行。
+
+难点在于，路径跟随的元素需要偏移与旋转。直线进度条与环形进度条偏移后的路径还不一样。
+
 ### 路径跟随+偏移
+
+需求中有两种偏移，直线进度条的是基于指标偏移，环形进度条是基于圆心偏移。直线进度条好说，直接加上x、y偏移量就好。
+
+环形进度条经过思考，加上x、y之后，需要做一个旋转
+(后面用些图来解释)
+
+百度后得到[二维旋转公式](https://blog.csdn.net/u013468614/article/details/83022177)，然后做如下转换即可
+
+```javascript
+const x = offset.x * Math.cos(angle) + offset.y * Math.sin(angle);
+
+const y = offset.y * Math.cos(angle) - offset.x * Math.sin(angle);
+```
+
 
 ### 路径跟随+旋转
 
-
+原来的组件，可以旋转组件。而旋转组件是整体用的transform:rotate整体旋转。所以，getPointAtLenth方法计算出来的值与是否旋转没有关系。计算出来的x、y也就是没有旋转的位置。如果需要旋转，则需要一些三角函数的知识。。
+(后面用些图来解释)
+```javascript
+if (quadrantFirst || quadrantFourth) {
+ 	x += L * (1 - Math.cos(rotate));
+} else {
+	x += L * (1 + Math.abs(Math.cos(rotate)));
+}
+ 
+y -= L * Math.sin(rotate);
+```
 
