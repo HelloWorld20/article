@@ -88,15 +88,35 @@ Z = closepath
 
 ### stroke-width
 
+线段宽度，单位是坐标系单位
+
 ### fill
+
+参数是颜色值，可以填写颜色字符串和hex RGB，填写颜色值则填充封闭区域。如果设置为none，则不填充。表现是只显示边框
+
+透明度用另一个参数： fill-opacity
 
 ### stroke
 
+stroke是线条颜色，参数同fill，透明度用另一个参数：stroke-opacity
+
 ### stroke-dasharray
+
+如其名，参数是一个“数组”，当然是一个字符串化的数组。描述如何绘制线段。
+
+参数是以逗号分隔的数字形式如：`5,5`
 
 ### stroke-dashoffset
 
+svg线段的偏移量。参数是数字，虽然简单，但是这个是实现进度条的必要参数。一般可以动态的设置偏移量来表示进度
+
 ### getBBox
+
+返回一个`SVGRect`对象，描述一个图像具体像素位置。
+
+svg与path都有此方法。svg上的方法返回的是其所有子元素占用空间的最小集合。
+
+此方法不受坐标系限制。图像超出坐标系也会计算进去。
 
 ### vector-effect="non-scaling-stroke"
 
@@ -105,63 +125,34 @@ Z = closepath
 
 ## 几种实现进度的方法
 
+因为需求要求进度的样式不仅仅是线形的，还可以是点状的。所以以下demo都实现了点状的样式。
+
 ### 动态计算stroke-dasharray
+
+stroke-dasharray不仅可以画固定长度与间隔的“段”，当然也可以不定间隔的“段”。
+
+假设要实现的svg总长度为1000，每一段长度为5，间隔也为5。那么一个“段”加间隔就是1%的进度。那么要表示10%，应该是10个重复的”段“。后面的90%，则设置为一个长间隔就好。
+
+stroke-dasharray应该是：5,5,5,5,5,5,……连续20个5,。后面的`长间隔`
+
+<iframe height="300" style="width: 100%;" scrolling="no" title="svg进度条" src="https://codepen.io/helloworld20/embed/ZEvePdZ?default-tab=html%2Cresult" frameborder="no" loading="lazy" allowtransparency="true" allowfullscreen="true">
+  See the Pen <a href="https://codepen.io/helloworld20/pen/ZEvePdZ">
+  svg进度条</a> by wei jianghong (<a href="https://codepen.io/helloworld20">@helloworld20</a>)
+  on <a href="https://codepen.io">CodePen</a>.
+</iframe>
 
 ### 动态计算stroke-dashoffset
 
+<iframe height="300" style="width: 100%;" scrolling="no" title="svg进度条，动态计算stroke-dashOffset" src="https://codepen.io/helloworld20/embed/LYeWvZR?default-tab=html%2Cresult" frameborder="no" loading="lazy" allowtransparency="true" allowfullscreen="true">
+  See the Pen <a href="https://codepen.io/helloworld20/pen/LYeWvZR">
+  svg进度条，动态计算stroke-dashOffset</a> by wei jianghong (<a href="https://codepen.io/helloworld20">@helloworld20</a>)
+  on <a href="https://codepen.io">CodePen</a>.
+</iframe>
+
+
 ### 动态计算d参数
 
-## 缓动函数
-
-
-
-这次有个需求：
-
-	应该是1%-78%-88%-99这%样的节奏分布在整个时间段内。如设置3s最短时间。前1s进度1%-78%。第2s78-88%。最后1秒。88%-99%。
-
-本质上就是要自己实现一个缓动函数。
-
-缓动函数大家常见的就是linear、ease、ease-in-out之类的，
-
-当需要自己实现一个缓动函数，起实也很简单。
-
-缓动函数图像起实就是一个横坐标为1、纵坐标也是1的函数图像，缓动函数内部需要做的就是实现这个函数图像对应的函数。
-
-举例子，linear在函数图像上就是范围是0~1的一个一个斜率为1的一元一次方程
-
-	f(x) = x; // x <= 1 && x >= 0;
-	
-所以方法也很简单
-
-```javascript
-function Linear(amount) {
-	return amount;
-}
-```
-
-所以需求的缓动函数应该是
-
-```javascript
-function MockLoadingEasing(amount: number): number {
- const k1 = 2.34;
- const k2 = 0.3;
- const k3 = 0.36;
- if (amount <= 0.33) {
- 	return amount * k1;
- }
- const phase1 = 0.33 * k1;
- if (amount > 0.33 && amount < 0.67) {
- 	const phase2 = (amount - 0.33) * k2;
- 	return phase1 + phase2;
- }
-
- const phase2 = 0.33 * k2;
- const phase3 = (amount - 0.67) * k3;
- return phase1 + phase2 + phase3;
-}
-```
-
-### tweenjs
+(待补充)
 
 ## 路径跟随
 
@@ -201,3 +192,54 @@ if (quadrantFirst || quadrantFourth) {
 y -= L * Math.sin(rotate);
 ```
 
+## 缓动函数
+
+这次有个需求：
+
+	应该是1%-78%-88%-99这%样的节奏分布在整个时间段内。如设置3s最短时间。前1s进度1%-78%。第2s78-88%。最后1秒。88%-99%。
+
+本质上就是要自己实现一个缓动函数。
+
+缓动函数大家常见的就是linear、ease、ease-in-out之类的，
+
+当需要自己实现一个缓动函数，起实也很简单。
+
+缓动函数图像起实就是一个横坐标为1（时间）、纵坐标也是1（偏移量）的函数图像，缓动函数内部需要做的就是实现这个函数图像对应的函数。
+
+举例子，linear在函数图像上就是范围是0~1的一个一个斜率为1的一元一次方程
+
+	f(x) = x; // x <= 1 && x >= 0;
+	
+所以方法也很简单
+
+```javascript
+function Linear(amount) {
+	return amount;
+}
+```
+
+所以需求的缓动函数应该是
+
+```javascript
+function MockLoadingEasing(amount: number): number {
+ const k1 = 2.34;
+ const k2 = 0.3;
+ const k3 = 0.36;
+ if (amount <= 0.33) {
+ 	return amount * k1;
+ }
+ const phase1 = 0.33 * k1;
+ if (amount > 0.33 && amount < 0.67) {
+ 	const phase2 = (amount - 0.33) * k2;
+ 	return phase1 + phase2;
+ }
+
+ const phase2 = 0.33 * k2;
+ const phase3 = (amount - 0.67) * k3;
+ return phase1 + phase2 + phase3;
+}
+```
+
+他的需求是三段一元一次方程，只要三个函数的斜率就行。
+
+### tweenjs
