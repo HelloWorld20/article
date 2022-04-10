@@ -46,9 +46,6 @@ tags: [svg,总结]
 
 真正描述内容的是svg标签的子元素。有非常多类型。而目前用到的，也是功能最强的是就是\<path/>标签。\<path/>应该是可以描述任意形状的内容。
 
-
-
-
 ### 属性d
 \<path/>强大的原因就是d参数。内容太多，则不展开讲。可以参考：[svg之path详解](https://www.jianshu.com/p/c819ae16d29b)
 
@@ -92,19 +89,51 @@ Z = closepath
 
 ### fill
 
-参数是颜色值，可以填写颜色字符串和hex RGB，填写颜色值则填充封闭区域。如果设置为none，则不填充。表现是只显示边框
+参数是颜色值，可以填写颜色字符串和hex RGB，填写颜色值则填充封闭区域。如果设置为none，则不填充。表现是只显示描边
 
 透明度用另一个参数： fill-opacity
 
 ### stroke
 
-stroke是线条颜色，参数同fill，透明度用另一个参数：stroke-opacity
+stroke是描边颜色，参数同fill，透明度用另一个参数：stroke-opacity
 
 ### stroke-dasharray
 
 如其名，参数是一个“数组”，当然是一个字符串化的数组。描述如何绘制线段。
 
-参数是以逗号分隔的数字形式如：`5,5`
+参数是以逗号分隔的数字形式如：`10,5`
+
+第一个值是第一段线段的值，第二个值是第一段与第二段的间隔的值，以此类推。如果超过数组长度，则取第一个值，如此反复。
+
+可以用个迭代器来表述：
+
+```javascript
+
+function dashArray(array) {
+	var isLine = false;
+	var nextIndex = 0;
+	return {
+		next: () => {
+			var idx = array.length % nextIndex;
+			isLine = !isLine;
+			return {
+				value: {
+					length: array[idx],
+					style: isLine ? 'line' : 'gap'
+				},
+				done: false
+			}		
+		}
+	}
+}
+
+```
+
+简单举几个例子
+
+参数`6`：则所有线段是`6`，间隔也是`6`
+参数`10, 5`：则第一线段是`10`，第一间隔是`5`，以此类推
+参数`15, 10, 5`：则第一段线段是`15`，第一个间隔是`10`，第二个线段是`5`，第二个间隔是`15`，第三个线段是`10`，第三个间隔是`5`。以此类推
 
 ### stroke-dashoffset
 
@@ -119,6 +148,10 @@ svg与path都有此方法。svg上的方法返回的是其所有子元素占用�
 此方法不受坐标系限制。图像超出坐标系也会计算进去。
 
 ### vector-effect="non-scaling-stroke"
+
+官方说法是：该值的最终视觉效果是笔触宽度不依赖于元素的变换（包括非均匀缩放和剪切变换）和缩放级别
+
+白话意思就是，缩放后，描边宽度与原来一致。并不会随着，缩放放大缩小
 
  [stackoverflow-path.getTotalLength() returning wrong values](https://stackoverflow.com/questions/40297356/path-gettotallength-returning-wrong-values)
 
@@ -243,3 +276,22 @@ function MockLoadingEasing(amount: number): number {
 他的需求是三段一元一次方程，只要三个函数的斜率就行。
 
 ### tweenjs
+
+进度条的进度肯定是一段一段的，如果资源少，那完全有可能就直接从0跳到100，那肯定不行。svg可以用transition实现动画，两个路径跟随的元素就没办法了。
+
+这是想到一个之前用过的缓动动画库`tweenjs`。
+
+```javascript
+window.TWEEN.Tween(this.curProgress)
+ .to({ val: progress }, 500)
+ .easing(window.TWEEN.Easing.Quadratic.Out)
+ .onUpdate(() => {
+ 	fn(this.curProgress.val);
+ })
+ .start();
+```
+
+这个方法会把this.curProgress这个对象的val参数作为起始值，progress作为结束值，在500毫秒时间段内应该存在的值。
+
+这个库其实也很好实现，后面可以补充。
+
