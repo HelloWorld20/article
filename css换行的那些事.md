@@ -118,11 +118,14 @@ mdn里没有解释。caniuse也搜不出记录。w3school里说：目前主流�
 
 但是white-space: pre会影响其他格式，所以white-space: nowrap和word-break: break-all可以用。当然，还要固定容的宽度。
 
+还有一个容易漏的点：display: block
+
 接下来，肯定要设置overflow: hidden，截断文字。
 
 最后要设置被截断的显示效果，即 text-overflow: ellipsis;就好。
 
 另一思路，用的是`-webkit-line-clamp`。更新、更灵活的方式。
+还有个容易忘的参数display: block；
 
 # 总结
 
