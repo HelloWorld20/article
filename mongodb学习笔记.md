@@ -245,3 +245,61 @@ MongoDB还提供了，db.collection.estimatedDocumentCount（），db.collection
 ### count
 
 顾名思义。返回统计数据。
+
+# 常用操作
+
+## 登陆数据库
+
+```shell
+mongo -u (dbname) -p (password)
+```
+
+## 新建数据库
+
+先查看所有数据库
+```shell
+show dbs
+```
+切换数据库
+
+use widgetNotion
+
+*不能是`widget-notion`，必须是驼峰*
+
+如果没有widgetNotion这个数据库，则是新建。如果有，则是切换。新建数据库应该登陆管理员账号，否则只能看到当前的数据库，而不是所有数据库。
+
+这时候`show dbs`还看不到新建的`widgetNotion`数据库，因为只展示有数据的
+
+插入数据
+
+```javascript
+db.widgetNotion.insert({name: 'widgetNotion'})
+```
+
+show dbs就能看到记录了。
+
+添加密码
+
+首先确保切换到指定的数据库
+```shell
+use widgetNotion
+```
+新建一个用户
+
+db.createUser({user: "user",pwd: "password",roles: [ { role: "dbOwner", db: "yourdatabase" } ]})
+
+重启mongidb
+
+```shell
+sudo service mongod restart
+```
+
+or
+
+```shell
+sudo service mongod stop
+
+sudo service mongod start
+```
+
+然后就能正常登陆了。
