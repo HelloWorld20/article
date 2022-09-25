@@ -1,6 +1,6 @@
 ---
 title: 性能优化之window.performance
-date: 2021-5-30 17:11
+date: 2021-5-30 17:11:00
 tags: [总结,前端技术,性能优化]
 ---
 
