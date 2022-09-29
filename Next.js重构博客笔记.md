@@ -56,6 +56,42 @@ useEffect(() => {
 最后再封装成一个hooks，需要的页面一个`useHightLight()`即可
 
 
+## 引入随机名言
+
+旧版hexo模板的博客有个随机名言+打字机效果的UI，觉得挺炫酷的，也想加一个。
+
+了解到数据来自一个叫[一言](https://developer.hitokoto.cn/)的开放服务，直接调用一个接口就会返回随机名言
+
+打字机效果用的是[easy-typer-js](https://github.com/pengqiangsheng/easy-typer-js)库，安装后发现nextjs报错：`SyntaxError: Unexpected token 'export'``
+
+原因是easy-typer-js包返回的esm，babel默认没有处理node_modules里的文件。
+
+网上搜寻，nextjs的[issue](https://github.com/vercel/next.js/discussions/17685)里有人推荐使用[next-transpile-modules](https://github.com/martpie/next-transpile-modules)库来处理node_modules里的esm
+
+跟目录新增next配置文件`next.config.js`，写入以下内容即可
+
+```js
+// next.config.js
+const withTM = require('next-transpile-modules')(['easy-typer-js']); // pass the modules you would like to see transpiled
+
+module.exports = withTM({});
+```
+## fetch
+
+nextjs的fetch方法有点小奇怪。并没有专门的文档来介绍。根据其声明文件来看，fetch方法返回`Promise<Response>`对象。其对象包含请求头的信息，但是并不包含请求体。获取请求体则需要调用`res.json()`，奇怪的是res.json()返回的还是一个[promise](https://stackoverflow.com/questions/37555031/why-does-json-return-a-promise)。网上说，fetch().then()得到的是请求头。fetch().then(res => res.json()).then(res => console.log(‘此处才是请求体’))，需要then两次。
+
+所以获取名言接口+useSWR的写法是
+
+```jsx
+
+function fetcher() {
+  return fetch('https://v1.hitokoto.cn/').then(res => res.json())
+}
+
+const { data } = useSWR('1', fetcher);
+
+```
+
 # todo
 
 * 主页、文章详情、归档、标签、关于页面。
