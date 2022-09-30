@@ -10,6 +10,33 @@ tags: [笔记,Nextjs,tailwind]
 
 # 正文
 
+## 添加别名
+
+分两个，webpack别名和typescript别名
+
+```javascript
+// next.config.js
+module.exports = {
+  webpack: (config) => {
+    config.resolve.alias['@'] = path.resolve(__dirname)
+    return config;
+  }
+}
+```
+
+```json
+// tsconfig.json
+
+{
+	"baseUrl": ".",
+    "paths": {
+      "@/*": ["./*"]
+    }
+}
+
+```
+
+
 ## 引入代码高亮
 
 Nextjs的模板中用的remark没有自带代码高亮。网上搜寻后了解到hightlight.js是专业的代码高亮库。
@@ -91,6 +118,95 @@ function fetcher() {
 const { data } = useSWR('1', fetcher);
 
 ```
+## 引入photoswipe，图片预览插件
+
+这次打算实现相册的功能，所以打算引入保存在github star里许久的photoswipe库。首先拿一个文章详情页面做实验
+
+看了文档，发现photoswipe需要的html结构是要可以点击放大的图片的父组件必须是`a`标签，且a标签的href或者data-pswp-src必须填入图片的url。
+
+当然，remark转出来的html是不会给图片包上一层a标签的，想要达到photoswipe要求的结构，则需要修改remark的输出结果。
+
+经过大量的搜寻，remark有[大量的插件](https://github.com/remarkjs/remark/blob/main/doc/plugins.md#list-of-plugins)可以增强markdown转html的功能。发现[remark-image](https://github.com/remarkjs/remark-images)就可以给img标签套上一层a标签，但是它只管给a标签的href属性填为图片链接。还需要定制一下a标签的属性。
+
+（这里走了个弯路，当时认为a标签必须设置`data-pswp-src`参数，但是后来发现直接设置`href`也是可以的，remark-image已经可以实现photoswipe的基本结构，但是要增强功能，还是改属性的，弯路也没白走）
+
+修改remark转html的代码，新增一个插件
+```javascript
+import { remark } from 'remark'
+import html from 'remark-html'
+import remarkImages from 'remark-images'
+
+export default async function markdownToHtml(markdown: string) {
+  const result = await remark().use(html).use(remarkImages).process(markdown)
+  return result.toString()
+}
+```
+插件中看到[remark-attr](https://github.com/arobase-che/remark-attr),可以定制元素属性，这就是我想要的功能。但是可惜的是，该插件已经[不兼容最新的 remark，且不再维护](https://github.com/arobase-che/remark-attr/issues/34#issuecomment-1229378243)
+
+又经过大量搜寻和查看源码，发现remark-html[内部](https://github.com/remarkjs/remark-html/blob/main/index.js#L43)是先把mast（markdown ast）转换成hast（html ast），操作后再把hast转换成html。那么我也可以操作hast来实现修改a标签的属性。
+
+先把代码copy到本地。看到插件中用到一个专门[处理ast的库](https://github.com/syntax-tree)，其中[unist-util-map](https://github.com/syntax-tree/unist-util-map)是可以遍历处理hast的方法。所以在中间插入一段代码：
+
+```javascript
+cleanHast = map(cleanHast, (node) => {
+	if (isMarkedImage(node)) {
+	  node.properties['data-pswp-src'] = node.properties.href
+	}
+	return node;
+});
+```
+找到插入的a标签修改其属性即可。
+
+（又走了一个弯路，remark-images不是给图片包一层a标签，而是给图片url的plain text包一层a标签，并且给当前的图片url变成图片标签）
+
+改造一下源码的判断条件即可。
+
+```javascript
+
+// visitParents(tree, 'text', (node, parents) => {
+visitParents(tree, 'image', (node, parents) => {
+
+	//  const value = String(node.value).trim()
+    const url = node.url;
+    //  if ((isUrl(value) || isImgPath(value)) && isImgExt(value)) {
+
+
+	const image = {
+       type: 'image',
+       // url: value,
+       url,
+       alt: '',
+       position: node.position
+     }
+	 /** @type {Image|Link} */
+	 let next = image
+	 // Add a link if we’re not already in one.
+	 if (!interactive) {
+	   next = {
+		 type: 'link',
+		 // url: value,
+		 url,
+		 title: 'flag',
+		 children: [image],
+		 position: node.position
+	   }
+	 }
+
+})
+
+```
+
+### 还有photoswipe必要的宽高属性
+
+
+## 更强的lightgalleryjs
+
+[lightgallaryjs](https://www.lightgalleryjs.com/)
+
+
+## 子路由刷新404
+
+next.config.js里添加配置：`trailingSlash: true`
 
 # todo
 
