@@ -196,12 +196,48 @@ visitParents(tree, 'image', (node, parents) => {
 
 ```
 
-### 还有photoswipe必要的宽高属性
-
 
 ## 更强的lightgalleryjs
 
-[lightgallaryjs](https://www.lightgalleryjs.com/)
+photoswipe另一个必填项是，必须要指定图片宽高，这点就真的有点为难了。实现起来估计得在运行时计算宽高在动态设置html的markup。因为博客内容都是markdown转换生产的html字符串，在Nextjs里实现起来，实在不太优雅。
+
+所以又搜寻了一番，发现另一个库更符合实际：[lightgallaryjs](https://www.lightgalleryjs.com/)
+
+该插件可以插件式的引入功能，非常灵活的自定义html的markup，而且还自带React组件，都省的自己封装一次。
+
+只需要在remark-html里的hast给合适的node添加指定class，
+
+```javascript
+cleanHast = map(cleanHast, (node) => {
+      if (isMarkedImage(node)) {
+        node.properties.class = GALLERY_ITEM_CLASS
+      }
+      return node;
+    });
+```
+
+然后再设置给lightgallaryjs即可
+
+```jsx
+
+import LightGallery from 'lightgallery/react';
+
+// Plugins
+import lgThumbnail from 'lightgallery/plugins/thumbnail'
+import lgZoom from 'lightgallery/plugins/zoom'
+
+import 'lightgallery/css/lightgallery.css';
+import 'lightgallery/css/lg-zoom.css';
+import 'lightgallery/css/lg-thumbnail.css';
+
+
+<LightGallery speed={500} plugins={[lgThumbnail, lgZoom]} selector={`.${GALLERY_ITEM_CLASS}`}>
+	<div>...</div>
+</LightGallary>
+
+```
+
+是时候淘汰老旧的Photoswipe了
 
 
 ## 子路由刷新404
