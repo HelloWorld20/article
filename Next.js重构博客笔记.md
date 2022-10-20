@@ -8,6 +8,14 @@ tags: [笔记,Nextjs,tailwind]
 
 此偏文章是笔记的形式。主要是记录开发过程。可能会组织得比较乱。
 
+# todo
+
+* 主页、文章详情、归档、标签、关于页面。
+* 文章搜索功能
+* 相册
+* 评论、访问量
+* 文章图片接入PhotoSwipe点击放大√
+
 # 正文
 
 ## 添加别名
@@ -239,18 +247,70 @@ import 'lightgallery/css/lg-thumbnail.css';
 
 是时候淘汰老旧的Photoswipe了
 
+## 文章搜索功能
+
+文章搜索功能起初是想搜索一个基于文件系统的搜索库，但是没有Google出结果。
+
+然后想想，其实难度到不算特别复杂，不妨自己用TS写一写。后面有时间后可以用Rust来写一个升级版。
+
+一次巧合，阮一峰大神的[科技爱好者周刊](https://www.ruanyifeng.com/blog/2022/10/weekly-issue-226.html)刚好推荐了两个静态文件搜索工具[lyra](https://github.com/LyraSearch/lyra)和[pagefind](https://pagefind.app/)，两者各有优缺点。
+
+lyra粗看一遍文档是要手动创建一个基于本地存储的db，其语法与真的db操作很相似，那这样也许直接用真实的db也挺好。但是我只需要一个本地搜索功能。体验官网demo，速度一般。使用复杂度相对高。好处是，文档体验非常良好，因为是基于Typescript开发的，所以接口设计上很合理。
+
+pagefind是基于rust开发的本地静态文件搜索。官网体验了一下，速度飞快。而且自带搜索UI，省心。缺点是使用不太方便，与项目没有非常契合。
+
+因为我对Rust还有些兴趣，且pagefind上手很快，所以选择了pagefind体验了一番。确实很强大。
+
+### pagefind
+
+pagefind是一个静态文件构建后运行的工具。在于nextjs，则需要next build && next export后，对out文件夹进行处理。
+
+pagefind会扫描需要建立索引的html文件，在这的情况则需要扫描out文件夹，然后会生成一个_pagefind文件夹，里面包括搜索页面的css与js，以及建立好的文件索引。
+
+然后再需要的地方引入css与js即可。
+
+这样的设计就会导致pagefind无法在dev的时候使用。而且自带的UI无法定制。这是pagefind我认为最大的缺点。
+
+#### 安装
+
+安装是一个小坑之一。官方文档推荐npx安装直接运行，但是我的windows环境下，cmder运行没有任何反应。
+
+[网上搜到](https://github.com/CloudCannon/pagefind/issues/66#issuecomment-1237323971)，可以安装到本地，然后还要修改一下`node_modules\pagefind\bin\pagefind_extended`，把其命名为`pagefind_extended.exe`才能使用
+
+```json
+
+"indexed": "pagefind --source out"
+
+```
+
+#### 使用
+
+运行后，会在out文件夹下生成`_pagefind`文件夹，文件夹下有一份js与css，在合适的地方引入即可生成出搜索UI
+
+```html
+<link href="/_pagefind/pagefind-ui.css" rel="stylesheet"> 
+<script src="/_pagefind/pagefind-ui.js" type="text/javascript"></script> 
+<div id="search"></div> 
+<script> 
+	window.addEventListener('DOMContentLoaded', (event) => { 
+		new PagefindUI({ element: "#search" }); 
+	});
+</script>
+```
+
+**还好UI样式与我博客风格相符，不然都不知道如何修改**
+
+（补充一张截图）
+
+默认情况下，pagefind会检索所有html文件。而我只需要能检索文章详情即可。官方给出的方案是，在需要检索的html标签加上`data-pagefind-body`属性即可。pagefind会在带有此属性的子标签中搜索内容。
+
+
 
 ## 子路由刷新404
 
 next.config.js里添加配置：`trailingSlash: true`
 
-# todo
 
-* 主页、文章详情、归档、标签、关于页面。
-* 文章搜索功能
-* 相册
-* 评论、访问量
-* 文章图片接入PhotoSwipe点击放大
 
 # bug log
 
@@ -275,3 +335,6 @@ Error: Error serializing `.allPosts[0].date` returned from `getStaticProps` in "
 而如果要访问，那window应该在componentDidMount或者useEffect里操作。
 
 会在服务端执行的代码除了getStaticProps,getStaticPaths等还有constructor、componentWillMount、getDerivedStateFromProps、render。所以不要在这些生命周期、函数内调用仅浏览器端能访问的对象。
+
+[StackOverflow](https://stackoverflow.com/questions/55151041/window-is-not-defined-in-next-js-react-app)
+
