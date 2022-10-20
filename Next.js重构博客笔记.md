@@ -267,3 +267,11 @@ Error: Error serializing `.allPosts[0].date` returned from `getStaticProps` in "
 来源：
 
 [github issue](https://github.com/vercel/next.js/issues/11993#issuecomment-617937409)
+
+## window is not defined
+
+因为部分代码是会再服务端执行的，所以在服务端执行的代码不能执行window等仅在浏览器环境才能访问的对象。
+
+而如果要访问，那window应该在componentDidMount或者useEffect里操作。
+
+会在服务端执行的代码除了getStaticProps,getStaticPaths等还有constructor、componentWillMount、getDerivedStateFromProps、render。所以不要在这些生命周期、函数内调用仅浏览器端能访问的对象。
