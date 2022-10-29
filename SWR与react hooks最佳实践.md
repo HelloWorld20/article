@@ -89,6 +89,10 @@ loading状态应该是`data !== undefined && error === undefined`
 
 所以也有一个小小的限制。接口返回值不能是undefined
 
+**10月14日更新**
+
+其实想太多了，isValidating就是loading的意思。因为对于SWR来说，重新请求就是“校验”“对齐”数据。。
+
 
 ## React Hooks最佳实践
 

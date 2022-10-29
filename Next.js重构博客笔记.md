@@ -366,7 +366,11 @@ Error: Error serializing `.allPosts[0].date` returned from `getStaticProps` in "
 
 ## window is not defined
 
-在使用服务端渲染（getStaticProps）时，不能在组件内读取client端的对象。如window，document等。需要在useEffect内或者documentDidMount内读取。
+因为部分代码是会再服务端执行的，所以在服务端执行的代码不能执行window等仅在浏览器环境才能访问的对象。
+
+而如果要访问，那window应该在componentDidMount或者useEffect里操作。
+
+会在服务端执行的代码除了getStaticProps,getStaticPaths等还有constructor、componentWillMount、getDerivedStateFromProps、render。所以不要在这些生命周期、函数内调用仅浏览器端能访问的对象。
 
 [StackOverflow](https://stackoverflow.com/questions/55151041/window-is-not-defined-in-next-js-react-app)
 
