@@ -13,9 +13,6 @@ tags: [总结,前端技术,性能优化]
 性能优化的第二个重要的点是window.performance对象。performance对象下包含非常详细的属性和方法，可以利用其分析出很多性能上的问题。下面列举些重要的属性和方法，并且介绍其使用场景。
 
 
-
-<!-- more -->
-
 ## performance.memory
 
 MDN标记为已废弃。

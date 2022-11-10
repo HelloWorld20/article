@@ -13,11 +13,6 @@ tags: [总结,Taro3,微信小程序]
 1. 重写的架构能让Taro真正的利用React来开发小程序，享受完整的React功能。甚至还能用Vue2、Vue3来开发。
 2. 采用Webpack4打包构建，速度更快，更主流，更多定制。抽离公共代码，打包压缩代码更小。
 
-# 一些成果
-
-* 利用analysis-bundle-plugin分析包体积，利用dayjs替换momentjs。使得包体积从2086kb减少到2023kb。减少63kb代码。babel-preset-env去除codejs，代码包减少十几kb
-* 通过修改url-loader，把所有图片弄到远程。代码从2002kb减少到1898kb。并且后面添加的图片即可以版本管理，又可以剥离源代码。
-
 
 # 升级流程
 
@@ -127,7 +122,7 @@ import React, {useEffect, useState} from 'react';
 
 路由信息不再在this里，也没有this.$scope。路由信息得在Taro.getCurrentInstance().router里。
 
-函数组件可以用this指代当前组件实例，但是函数组件无法获取当前组件实例。（react如此)
+类组件可以用this指代当前组件实例，但是函数组件无法获取当前组件实例。（react的要求)
 
 ### 趁机切换eslint
 
@@ -220,13 +215,18 @@ webpack会把引用了两次以上的css文件合并打包到common.wxss里，�
 
 则page1和component1的配置文件都需要配置usingComponents
 
+# 一些额外的成果
 
+* 利用analysis-bundle-plugin分析包体积，利用dayjs替换momentjs。使得包体积从2086kb减少到2023kb。减少63kb代码。babel-preset-env去除codejs，代码包减少十几kb
+* 通过修改url-loader，把所有图片弄到远程。代码从2002kb减少到1898kb。并且后面添加的图片即可以版本管理，又可以剥离源代码。
 
 # 遗留问题
 
 1. eslint与prettier冲突
 
 # eslint配置
+
+```json
 
 module.exports = {
   env: {

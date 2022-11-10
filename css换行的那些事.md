@@ -12,8 +12,6 @@ overflow: hidden, white-space: nowrap; text-overflow:ellipsis;
 
 文字相关的css属性大概有：`word-break、white-space、word-wrap、overflow-wrap、word-spacing`。长的都贼像。有必要好好屡清楚他们之间的关系和功能了。
 
-<!-- more -->
-
 # 常见css
 
 ##  [word-break](https://developer.mozilla.org/zh-CN/docs/Web/CSS/word-break)

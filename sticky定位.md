@@ -6,12 +6,9 @@ tags: [css,总结]
 
 工作中要实现一个这样的效果，找来找去，找到了张鑫旭大神实现的sticky title的demo。虽然posotion:sticky并没有办法实现我需要的效果，但是觉得看完sticky的定位效果确实比我之前想象的有意思（至少我没想到position:sticky可以实现多个sticky title，并且后者会把前者网上顶的效果），所以记下，方便以后回顾。
 
-<!-- more -->
-
 张鑫旭原文：[杀了个回马枪，还是说说position:sticky吧](https://www.zhangxinxu.com/wordpress/2018/12/css-position-sticky/)
 
 ![multi sticky title](/images/sticky-layout-s.gif)
-<!-- more -->
 # 概念
 
 先简单介绍下概念。position:sticky。顾名思义就是“粘性"定位。在元素在视图窗口内，表现为 position:relative。当元素滚动到视图之外之后，表现为 position: fixed。很方便的实现了粘性定位。没有position:sticky。就只能借助js来实现类似的效果。方便许多。

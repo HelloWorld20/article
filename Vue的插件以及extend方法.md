@@ -9,8 +9,6 @@ tags: [总结,前端技术]
 ![微观小屋](http://ooxy8egxa.bkt.clouddn.com/小书匠/1536486856450.jpg)
 
 
-<!--more-->
-
 # 注入Vue原型
 
 如果想要实现`this.$message()`这样的调用方法，只是需要在`Vue.prototype` 上定义一个方法就好。问题是在什么地方合理地注入。Vue官方给的方案是[Vue.use](https://cn.vuejs.org/v2/guide/plugins.html)

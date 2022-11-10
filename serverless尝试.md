@@ -8,8 +8,6 @@ tags: [前端技术]
 
 github：https://github.com/HelloWorld20/scf_ticket_crawler
 
-<!-- more -->
-
 # 啥是serverless
 
 serverless类似微信小程序的云函数。serverless没有服务器的概念，只是一个函数，运行在服务器上的一段代码，开发者不用考虑项目搭建、服务器配置、环境配置这些"额外"的事。开发者只需要关注代码逻辑，其他都通过配置的方式配置即可。

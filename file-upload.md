@@ -6,8 +6,6 @@ tags: [前端技术]
 
 再说说文件上传客户端的问题。阮一峰大神这篇解释挺清楚[文件上传的渐进式增强](http://www.ruanyifeng.com/blog/2012/08/file_upload.html)。所以原理就不再赘述，就在这记录下实现的方法。
 
-<!-- more -->
-
 ## form表单上传
 
 form表单上传是最简单的文件上传,只需要一个form标签，把enctype设为multipart/form-data。action设置为上传路径。缺点是提交后会跳转。基本不会再用。
