@@ -247,6 +247,17 @@ import 'lightgallery/css/lg-thumbnail.css';
 
 是时候淘汰老旧的Photoswipe了
 
+## 文章表格样式支持
+
+引入remark-gfm即可，然后再写入一点点样式支持
+
+```css
+.post-body table th, .post-body table td {
+  border: 1px solid #ddd;
+  padding: 6px 13px;
+}
+```
+
 ## 文章搜索功能
 
 文章搜索功能起初是想搜索一个基于文件系统的搜索库，但是没有Google出结果。
@@ -296,6 +307,31 @@ pagefind会扫描需要建立索引的html文件，在这的情况则需要扫�
 		new PagefindUI({ element: "#search" }); 
 	});
 </script>
+```
+
+
+结合nextjs，最终的写法是这样的
+
+```jsx
+
+import "pagefind/bin/out/_pagefind/pagefind-ui.css";
+  
+export default function Search() {
+
+  return (
+    <section>
+      <div id="search"></div>
+      <Script
+        src="./_pagefind/pagefind-ui.js"
+        onLoad={() => {
+          // @ts-ignore
+          new PagefindUI({ element: "#search" });
+        }}
+      />
+    </section>
+  );
+}
+
 ```
 
 **还好UI样式与我博客风格相符，不然都不知道如何修改**
