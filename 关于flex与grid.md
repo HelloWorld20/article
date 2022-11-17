@@ -7,8 +7,6 @@ tags: [css,总结]
 
 整体知识来源于[阮一峰的博客](http://www.ruanyifeng.com/blog/2015/07/flex-grammar.html)
 
-<!-- more -->
-
 ## 容器上的属性
 
 * display: flex/inline-flex;

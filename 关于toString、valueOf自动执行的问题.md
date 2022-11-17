@@ -8,8 +8,6 @@ tags: [前端技术]
 
 首先，JavaScript中有3个原始类型，String、Number和Boolean。JavaScript在某些情况下会将数据转换成原始类型，及JavaScript会自动调用toString和valueOf方法来完成数据转换。
 
-<!-- more -->
-
 ## 转换成String
 
 1. 如果toString方法存在并且返回“原始类型”，返回toString的结果。

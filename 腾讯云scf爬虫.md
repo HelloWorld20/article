@@ -11,8 +11,6 @@ tags: [腾讯云,云函数,爬虫,前端]
 
 技术栈：腾讯云scf、mongodb、node、axios、echarts
 
-<!-- more -->
-
 # 准备
 
 ## 新建项目

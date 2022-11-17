@@ -8,8 +8,6 @@ tags: [git]
 
 当然，彻底掌握git才是最彻底的解决办法。[廖雪峰的Git教程](https://www.liaoxuefeng.com/wiki/0013739516305929606dd18361248578c67b8067c8c017b000)是网上能找到最好点git教程了。
 
-<!-- more -->
-
 ## git checkout -- (filename)
 
 ```bash

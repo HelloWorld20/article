@@ -8,8 +8,6 @@ tags: [Nodejs]
 
 最近需要做一个文件上传的功能，但后台还没给API，所以想先用express.js先搭建一个本地文件上传服务器先把功能实现了。实际操作中，发现node.js实现文件上传服务器还有不少坑。所以写篇文章想记下遇到的问题和自己的理解，以备后患。
 
-<!-- more -->
-
 我用到的工具是`formidable@1.1.1`，网上可能更多的推荐是`multer`，但是按教程操作`res.file`或`res.files`始终是undefined，索性改用`formidable`。
 
 还有一种说法express 4.X也已经直接支持文件上传[文章见Cnode](https://cnodejs.org/topic/4f40a4dc0feaaa4424081758)，但是我未能实现，暂时用`formidable`实现，以后有新发现再回头修改。
