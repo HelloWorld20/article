@@ -8,7 +8,7 @@ tags: [总结,Vue,Vue3]
 
 答：`<script setup>` 形式书写的组件模板被编译为了一个内联函数，和 `<script setup>` 中的代码位于同一作用域
 
-vue需要学习额外的知识
+vue需要学习额外的知识，很多很多语法糖。
 
 如 scoped 无法修改子组件，如要修改，需要添加:deep()
 
@@ -16,5 +16,54 @@ vue需要学习额外的知识
 
 ## 什么是宏？
 
-组件v-model
+## 组件v-model
 相对于vue2，vue3 组件v-model默认对应的字段是modelValue与update:modelValue。也可以自定义v-model字段。如v-model:userName对应的字段是userName与update:userName，都是v-model:xxx => xxx => update:xxx的组合。
+
+多层的组件v-model(待验证)
+
+假设有多层组件 a,b,c
+
+```vue
+//Man.vue
+<template>
+	<Skill v-model="form" />
+</template>
+
+<script>
+	const form = ref({
+		name: 'wei',
+		age: 5,
+		skill: {
+			program: {
+				Rust: true,
+				React: true,
+				Java: false
+			}
+		}
+	})
+</script>
+
+// Skill.vue
+<template>
+	<Detail v-model="skill" />
+</template>
+
+<script>
+	const props = defineProps(['modelValue']);
+	const skill = computed(props.modelValue.skill)
+</script>
+
+// Program.vue
+<template>
+	<input v-model="program.Rust" />
+	<input v-model="program.React" />
+	<input v-model="program.Java" />
+</template>
+
+<script>
+	const props = defineProps(['modelValue']);
+	const program = computed(props.modelValue.program)
+</script>
+
+```
+
