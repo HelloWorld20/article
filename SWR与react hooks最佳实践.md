@@ -93,6 +93,91 @@ loading状态应该是`data !== undefined && error === undefined`
 
 其实想太多了，isValidating就是loading的意思。因为对于SWR来说，重新请求就是“校验”“对齐”数据。。
 
+## 代数效应
+
+**2022年11月20日更新**
+
+代数效应首次遇见是卡颂的[React技术揭秘](https://react.iamkasong.com/process/fiber-mental.html#%E4%BB%80%E4%B9%88%E6%98%AF%E4%BB%A3%E6%95%B0%E6%95%88%E5%BA%94)里，里面的解释是：`代数效应是函数式编程中的一个概念，用于将`副作用`从`函数`调用中分离。`
+
+如果这么理解的话，SWR就是一个把副作用抽离的一个很经典的方法。
+
+在正常开发函数组件的过程中，遇到最多的副作用非调接口请求异步数据莫属。每次遇到这样的需求，往往如下写法：
+
+```jsx
+const [data, setData] = useState();
+const [loading, setLoading] = useState();
+
+useEffect(() => {
+	setLoading(true);
+	fetchData().then(res => {
+		setData(res);
+	}).finally(() => {
+		setLoading(false);
+	})
+}, [])
+
+if (loading) return <p>loading...</p>
+
+if (data) return <div>{data}</div>
+
+return <p>placeholder</p>
+```
+
+我们需要useEffect调用副作用代码，需要至少两个state来存储数据。
+
+如果要去除这一块的副作用。需要抽离加载数据的逻辑为一个自定义hooks
+
+```jsx
+const [loading, data, error] = useFetch(fetchData)
+
+if (loading) return <p>loading...</p>
+
+if (data) return <div>{data}</div>
+
+return <p>placeholder</p>
+```
+
+在于SWR，useFetch换成useSWR即可。
+
+再后来，网络搜寻一番代数效应的含义。说实话更迷糊了。
+
+网上[几篇文章](https://overreacted.io/zh-hans/algebraic-effects-for-the-rest-of-us/)更多的是：利用一些新的思想，新的语法来解决当前的问题。
+
+按我的理解，拿hooks来举例就是。
+
+在hooks出来之前，函数组件只能是根据props的输入，来确定输出。f(props) = vdom。我们无法用一个合理的方式新增新的输入。一切其他输入都是`副作用`
+
+```jsx
+export default App(props) {
+	// 除了props，我们没有其他方式非附着用的方式注入函数
+	// const age = localStorage.getItem('age') // 副作用
+	// const age = window.location.search // 也是副作用
+	return <div>{props.name}</div>
+}
+```
+
+React团队`利用代数效应`，实现了hooks，来达到一种新的无副作用新增输入的方法：f(props + state) = vdom
+
+```jsx
+export default App(props) {
+	const [age] = useState() // 这个就是无副作用的输入方式
+	return <div>{props.name}, {age}</div>
+}
+```
+
+照这么理解的话，SWR也是一种`代数效应`。有了SWR就能实现f(props + state + remoteData) = vdom
+
+```jsx
+export default App(props) {
+	// 除了props，我们没有其他方式非附着用的方式注入函数
+	// const age = localStorage.getItem('age') // 副作用
+	// const age = window.location.search // 也是副作用
+	const {data: address} = useSWR(fetcher);
+	const [age] = useState() // 这个就是无副作用的输入方式
+	return <div>{props.name}, {age}, {address}</div>
+
+}
+```
 
 ## React Hooks最佳实践
 

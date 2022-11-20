@@ -670,4 +670,88 @@ enum Option<T> {
 }
 ```
 
-因为太过于常用，成员Some(T)与None可以直接使用。
+如何理解Some(T)？有点难以理解。首先，Some(T)是枚举Option中的一个值，除了None表示空值，那么Some(T)就表示的是`有值`，但又因为是Option枚举的值，它代表的不是`肯定有值`，而是一种`可能有值`。
+
+在vscode Rust插件的自动提示中。`Some(5)会自动推断为Option(i32)、Some('e')推断为Option(char)`
+
+所以不能Some(5)当做5。只能当做是`Option(T)`的一个模式、一个值。
+
+反过来说，`不要错以为Some(T)是函数、方法，Some(T)是Option::Some(T)的简写`。
+
+另外一点，Option\<T\>和Some(T)永远记得要带上泛型T，暂不知道为啥
+
+## match控制流
+
+
+match是一个强大的控制流`运算符`，它允许我们将一个值与一系列的模式相比较，并根据相匹配的模式执行响应代码。模式可由字面值、变量、通配符和许多其他内容构成；
+
+看看代码：
+
+```rust
+enum Coin {
+    Penny,
+    Nickel ,
+    Dime,
+    Quarter,
+}
+
+fn main() {
+    let coin = Coin::Dime;
+    let result = value_in_cents(coin);
+    println!("{result}")
+}
+
+fn value_in_cents(coin: Coin) -> u8 {
+    match coin {
+        Coin::Penny => 1,
+        Coin::Nickel => 5,
+        Coin::Dime => 10,
+        Coin::Quarter => 25,
+    }
+}
+```
+
+match将结果值按顺序与每一个分支的模式相比较。如果匹配了这个值，这个模式相关的代码将被执行。如果模式不匹配，将继续执行下一个分支。
+
+看着其实非常像JavaScript的switch。但是Rust的match语法上更简洁，强调一个`模式匹配`。并且match与枚举关联性非常好。JavaScript则没有约束。
+
+## match与Option\<T\>
+
+Option是枚举、match是匹配模式（匹配枚举），所以他们两是最搭配的一对。
+
+**TODO: 不够经典，后面补充**
+
+```rust
+fn plus_one(x: Option<i32>) -> Option<i32> {
+    match x {
+        None => None,
+        Some(i) => Some(i + 1),
+    }
+}
+
+let five = Some(5);
+let six = plus_one(five);
+let none = plus_one(None);
+```
+
+Rust为了严谨，安全，默认是需要写出所有匹配模式的。有时候不需要匹配所有值，Rust提供通配符和_占位符。
+
+```rust
+let dice_roll = 9;
+match dice_roll {
+	3 => add_fancy_hat(),
+	7 => remove_fancy_hat(),
+	other => move_player(other), // other可以是任意`变量`，其作用是传递匹配的值
+}
+```
+或者是占位符
+```rust
+let dice_roll = 9;
+match dice_roll {
+	3 => add_fancy_hat(),
+	7 => remove_fancy_hat(),
+	_ => move_player(), // _表示匹配剩下所有
+}
+```
+
+**如果不需要通配，不能用下划线来当做通配符，是保留值，会报错**
