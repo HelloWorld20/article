@@ -757,3 +757,53 @@ match dice_roll {
 ```
 
 **如果不需要通配，不能用下划线来当做通配符，是保留值，会报错**
+
+## if let 简洁控制流
+
+有时候会有这样的写法：
+
+```rust
+let config_max = Some('s');
+match config_max {
+	Some(max) => println!("The maximum is configured to be {}", max),
+	_ => (),
+}
+```
+
+有时候变量(config_max)是一个Option的值，如果config_max最终不是None，则会走Some(max)这个匹配，并且把值赋给max，打印出来。如果变量是None则不做任何处理。这种情况应该是非常多的，而且`_ => ()`是什么必要的。所以Rust提供一个语法糖
+
+```rust
+let config_max = Some('x');
+if let Some(max) = config_max {
+	println!("The maximum is configured to be {}", max)
+}
+```
+
+当config_max是Some(T)时，就会走花括号内的逻辑。
+
+if let还支持else
+
+```rust
+enum Zone {
+    Futian,
+    Nanshan,
+    Luohu
+}
+
+fn main() {
+    let zone = Zone::Luohu;
+    if let Zone::Futian = zone {
+        println!("Your Location is Futian")
+    } else {
+        println!("Not in the Futian")
+    }
+}
+```
+
+**match语法是不是专门匹配枚举类型的？即使不是，那也是与枚举天生一对**
+
+## 总结
+
+* Rust的枚举相当强大，其值可以是很多类型，可以用impl块为其添加方法
+* Option(T)是最常见的枚举类型，Some(T)、None是Option::Some(T)、Option::None的简写。不是方法、也不是函数。Option\<T\>专门用来表达“可能没有值”的状态，很奇妙的枚举，与其他语言完全不同的概念。可以消灭（取代）null的一个新概念
+* match方法专门用来匹配枚举（待确认）,if let是match的语法糖，也是专门匹配枚举。
