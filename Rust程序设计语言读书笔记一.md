@@ -721,20 +721,17 @@ match将结果值按顺序与每一个分支的模式相比较。如果匹配了
 
 Option是枚举、match是匹配模式（匹配枚举），所以他们两是最搭配的一对。
 
-**TODO: 不够经典，后面补充**
 
 ```rust
-fn plus_one(x: Option<i32>) -> Option<i32> {
-    match x {
-        None => None,
-        Some(i) => Some(i + 1),
-    }
+let vec: Vec<i32> = vec![1,2,3,4];
+let third: Option<&i32> = vec.get(3);
+match third {
+	Some(num) => println!("third is {}", num),
+	None => println!("not match any")
 }
-
-let five = Some(5);
-let six = plus_one(five);
-let none = plus_one(None);
 ```
+
+如上，vec的get方法返回的是Option\<T\>类型，代表着`不一定`读取到数据。所以我们需要用match表达式去处理所有的情况。
 
 Rust为了严谨，安全，默认是需要写出所有匹配模式的。有时候不需要匹配所有值，Rust提供通配符和_占位符。
 
