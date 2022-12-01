@@ -363,3 +363,122 @@ let field_name = String::from("Favorite color");
     println!("{:?}", scores); // {"green": 50, "Blue": 10, "Yellow": 25}
 ```
 
+# 错误处理
+
+Rust将错误分为两大类：可恢复的与不可恢复的。可恢复的例如文件未找到，此时我们更多的需要去新建文件或者重试。不可恢复的错误如访问一个超过数组末端位置，一般是需要立即停止程序。
+
+panic!宏是抛出不可恢复的错误。Rust用Result\<T,E\>来处理可恢复的错误。
+
+panic!太简单了直接调用就好。下面介绍可恢复错误
+
+Result\<T,E\>是枚举，与Option\<T\>类似，也有两个枚举值
+
+```rust
+enum Result<T,E> {
+	Ok(T),
+	Err(E),
+}
+```
+
+所以我们就可以用match来处理Result\<T,E\>，以一个常见的打开文件为例
+
+```rust
+use std::fs::File;
+
+fn main() {
+    let _f = File::open("hello.txt");
+
+    let f = match _f {
+        Ok(file) => file, // 如果找到文件，返回文件句柄
+        Err(error) => panic!("Problem opening the file: {:?}", error) // 没有找到主动panic
+    };
+}
+```
+
+此处没有文件，控制台将会打印
+
+```bash
+thread 'main' panicked at 'Problem opening the file: Os { code: 2, kind: NotFound, message: "系统找不到指定
+的文件。" }', src\main.rs:7:23
+```
+
+Result\<T,E\>提供了一些方法可以简单的处理错误。文中介绍了两个，un_wrap与expect
+
+```rust
+let _f: Result<File, Error> = File::open("hello.txt");
+
+let f = match _f {
+     Ok(file) => file,
+     Err(error) => panic!("Problem opening the file: {:?}", error)
+};
+
+ let f1:File = _f.unwrap();
+
+ let f2:File = _f.expect("Failed to open hello.txt");
+```
+
+## 传播错误
+
+更多时候不是需要遇到错误直接处理，更多是要把错误传播出去，交给上游处理。先看原文例子
+
+```rust
+use std::fs::File;
+use std::io::{self, Read};
+
+fn main() {
+    let res: Result<String, Error> = read_username_from_file();
+
+    match res {
+        Ok(_) => println!("ok"),
+        Err(err: Error) => println!("not ok, {:?}", err)
+    }
+}
+  
+fn read_username_from_file() -> Result<String, io::Error> {
+    let f: Result<File, Error> = File::open("hello.txt");
+
+    let mut f: File = match f {
+        Ok(file: File) => file,
+        Err(e: Error) => return Err(e), // 此处直接结束
+    };
+
+    let mut s: String = String::new();
+
+    let temp: Result<String, Error> = match f.read_to_string(&mut s) {
+        Ok(some_var: usize) => Ok(s),
+        Err(e: Error) => Err(e), // 不太理解，这里可以不写return，但是上面的不屑return会报错。
+    };
+    
+    temp
+}
+```
+
+**此处不太理解，为什么第一个match返回的是File，第二个可以返回Result<String, Error>，第一个match的Err分支必须加return，第二个match的Err分支可加return也可以不加**
+
+因为模式固定，Rust提供了`?`运算符，上面的代码可以简写为：
+
+```rust
+fn read_username_from_file() -> Result<String, io::Error> {
+    let mut f: File = File::open("hello.txt")?;   // 但是不同的是此处是必须mut
+    let mut s = String::new();
+    let temp: usize = f.read_to_string(&mut s)?;
+    Ok(s)
+}
+```
+
+原文说：如果Result值是`Ok`，这个表达式将会返回`Ok`中的值而程序继续执行。如果值是`Err`，`Err`中的值将作为整个函数的返回值，就好像使用了return关键字一样。
+
+如，`File::open`报错，将直接返回`io::Error`，如果成功，则返回给变量`f`，所以此处变量`f`肯定是File类型。
+同理，结尾应该要返回`Ok(s)`，应该是`Result::Ok(s)`，与?可能会返回的`Result::Err`构成`Result<String, io::Error>`。
+
+上面代码还可以更简单：
+
+```rust
+fn read_username_from_file() -> Result<String, io::Error> { 
+	fs::read_to_string("hello.txt") 
+}
+```
+
+有意思的是，`?`运算符也可以用在Option\<T\>上，如果是None，则会提前抛出错误。
+
+* main函数不能用`?`，因为main函数应该返回`()`
