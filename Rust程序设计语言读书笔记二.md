@@ -45,6 +45,7 @@ mod front_of_house {
     mod serving {
         fn take_order() {
             println!("take_order");
+            // super指代父级，可以多个super
             super::super::back_of_house::fix_incorrect_order()
         }
   
@@ -62,7 +63,9 @@ fn serve_order() {}
 
 mod back_of_house {
     pub fn fix_incorrect_order() {
+	    // 可直接访问兄弟方法
         cook_order();
+        // super指代父级，这样的方式可访问父级方法
         super::serve_order()
     }
   
@@ -70,10 +73,12 @@ mod back_of_house {
 }
   
 pub fn eat_at_restaurant() {
+	// 绝对路径，从根部查找
     crate::front_of_house::hosting::add_to_waitlist();
 }
 
 pub fn eat_at_restaurant_again() {
+	// 引入模块到当前作用域
     use crate::front_of_house::hosting;
     hosting::add_to_waitlist();
 }
@@ -85,11 +90,11 @@ pub use crate::front_of_house::hosting;
 内容比较多，可以去看[原文](https://kaisery.github.io/trpl-zh-cn/ch07-04-bringing-paths-into-scope-with-the-use-keyword.html)，不全部展开讲。从上面例子，总结一下关键语法
 
 * mod关键字定义模块，可以定义很多类型，包括函数、方法、结构体、枚举
-* 默认情况下模块是私有的，pub关键字可以把模块变为共有，只需在mod前加上pub。
+* 默认情况下模块是私有的，`pub`关键字可以把模块变为共有，只需在`mod前加上pub`
 * 结构体模块的每一层级都需要加上pub才能被访问。pub枚举则可以访问所有元素
-* 绝对路径从src/lib.rs开始，以crate关键字开始。如`crate::front_of_house::hosting;`
+* 绝对路径从src/lib.rs开始，以`crate`关键字开始。如`crate::front_of_house::hosting;`
 * 相对路径则从兄弟模块开始。
-* 父级模块用super代表，可以多层嵌套如`super::super::back_of_house::fix_incorrect_order()`
+* 父级模块用`super`代表，可以多层嵌套如`super::super::back_of_house::fix_incorrect_order()`
 * use关键字可以将路径`引入作用域`，约定是引入父级模块。如我们需要使用`crate::front_of_house::hosting::add_to_waitlist()。约定是`use crate::front_of_house::hosting`，然后再`hosting::add_to_waitlist()`。
 * 重导出名称`pub use crate::front_of_house::hosting; `
 * as关键字提供新名称`use std::io::Result as IoResult;`
@@ -106,7 +111,7 @@ use std::{cmp::Ordering, io};
 
 原文是真的没看懂。网上搜到一篇[知乎专栏文章](https://zhuanlan.zhihu.com/p/164556350)很好理解。
 
-首先，我们需要显式地在Rust中构建模块树，在文件系统树和模块树之间不存在隐式的转换
+首先，文件系统树和模块树之间`不存在隐式的转换`，和nodejs不一样的是，nodejs每个文件(js，json)都是模块，Rust不是，Rust需要显式地在Rust中构建模块树。
 
 要把一个文件添加到模块树中，我们需要用`mod`关键字来将文件声明为一个子模块(submodule)。
 
@@ -202,7 +207,7 @@ Rust标准库中包含了一系列称之为集合(collections)的非常有用的
 
 ## vector
 
-Vector也称之为Vec\<T\>，它在内存中彼此相邻地排列所有值。Vector只能存储相同类型的值。
+Vector也称之为Vec\<T\>，它在内存中`彼此相邻`地排列所有值。Vector只能存储相同类型的值。
 使用方法如下
 
 ```rust
@@ -223,7 +228,7 @@ fn main() {
     println!("the third element is {}", third);
     
     // 通过get方法读取元素
-		// 通过get方法读取返回的是Option<T>，可以通过match或if let来处理返回值
+	// 通过get方法读取返回的是Option<T>，可以通过match或if let来处理返回值
     match v.get(3) { 
         Some(third) => println!("The third element is {}", third),
         None => println!("There is no third element."),
@@ -235,12 +240,12 @@ fn main() {
         println!("There is no third element.")
     }
 
-		let v4 = vec![100, 332, 45];
+	let v4 = vec![100, 332, 45];
     for i in v { // for in语句遍历vector，不同的是for in 遍历出来的是元素本身，而不是index
         println!("{}", i)
     }
 
-		enum SpreadsheetCell {
+	enum SpreadsheetCell {
         Int(i32),
         Float(f64),
         Text(String),
@@ -256,7 +261,7 @@ fn main() {
 
 Rust在编译时就必须准确的知道vector中类型的原因在于它需要知道存储每个元素到底需要多少内存。第二个好处是可以准确的知道这个vector中允许什么类型。如果Rust允许vector存放任意类型，那么当对vector元素执行操作时一个或多个类型的值就有可能会造成错误。使用枚举外加match意味着Rust能在编译时就保证总是会处理所有可能的情况。
 
-**个人不太能理解，保证能处理所有情况可以理解，但是存放枚举能保证每个元素多少内存吗？**
+**个人不太能理解，保证能处理所有情况可以理解，但是存放枚举能保证每个元素是固定内存吗？**
 
 ## 字符串
 
@@ -276,24 +281,25 @@ push_str：给字符串后面追加字符串
 push：给字符串后面追加字符
 +：会使得前面的值发生移动，后面需要传引用
 format!：最方便的字符串合并宏
+
 ```rust
    let mut s = String::from("hello"); // s必须是mut才能追加
-    s.push_str(" world");
-    s.push('!');
-    println!("{}", s); // hello world!
+   s.push_str(" world");
+   s.push('!');
+   println!("{}", s); // hello world!
 
-    let s1 = String::from("hello");
-    let s2 = String::from(" world");
-    let s3 = s1 + &s2;  // 此处是s1发生了移动，移动到s3；s1无法再使用。
-    // 至于s2为啥要加&，官方是说签名如此。。
-    println!("{}", s3); // hello world
+   let s1 = String::from("hello");
+   let s2 = String::from(" world");
+   let s3 = s1 + &s2;  // 此处是s1发生了移动，移动到s3；s1无法再使用。
+   // 至于s2为啥要加&，官方是说签名如此。。
+   println!("{}", s3); // hello world
   
-    let s1 = String::from("tic");
-    let s2 = String::from("tac");
-    let s3 = String::from("toe");
+   let s1 = String::from("tic");
+   let s2 = String::from("tac");
+   let s3 = String::from("toe");
   
-    let s = format!("{}-{}-{}", s1, s2, s3);    // 更方便的format!
-    println!("{}", s); // tic-tac-toe
+   let s = format!("{}-{}-{}", s1, s2, s3);    // 更方便的format!
+   println!("{}", s); // tic-tac-toe
 ```
 
 ### 索引字符串
@@ -332,40 +338,40 @@ Hash Map就和JavaScript里的对象很像了。
 use std::collections::HashMap; // hash map没有被prelude自动引用，需要手动引用
 
 let field_name = String::from("Favorite color");
-    let field_value = String::from("blue");
-    let mut map = HashMap::new(); // 需要mut才能insert
-    map.insert(field_name, field_value);
+let field_value = String::from("blue");
+let mut map = HashMap::new(); // 需要mut才能insert
+map.insert(field_name, field_value);
 
-    // println!("{},{}", field_name, field_value); // 此处所有权已经移动到map
+// println!("{},{}", field_name, field_value); // 此处所有权已经移动到map
 
-    let mut scores = HashMap::new();
-  
-    scores.insert(String::from("Blue"), 10);
-    scores.insert(String::from("Yellow"), 50);
+let mut scores = HashMap::new();
 
-    let team_name = String::from("blue");
-    let score = scores.get(&team_name); // 返回的值是Optino<T>
-  
-    // hash map的遍历
-    for (key, value) in &scores {
-        println!("{}: {}", key, value);
-    }
+scores.insert(String::from("Blue"), 10);
+scores.insert(String::from("Yellow"), 50);
 
-    scores.insert(String::from("Yellow"), 25);  // 会覆盖原先的值
-  
-    println!("{:?}", scores);   // {:?}可以直接打印hash map的值： {"Blue": 10, "Yellow": 25}
+let team_name = String::from("blue");
+let score = scores.get(&team_name); // 返回的值是Optino<T>
 
-    // insert会直接覆盖原值，entry加上or_insert可以不覆盖更新。
+// hash map的遍历
+for (key, value) in &scores {
+	println!("{}: {}", key, value);
+}
 
-    scores.entry(String::from("Yellow")).or_insert(50); // 原来有了yellow，不会覆盖
-    scores.entry(String::from("green")).or_insert(50); // 原来没有，插入50
+scores.insert(String::from("Yellow"), 25);  // 会覆盖原先的值
 
-    println!("{:?}", scores); // {"green": 50, "Blue": 10, "Yellow": 25}
+println!("{:?}", scores);   // {:?}可以直接打印hash map的值： {"Blue": 10, "Yellow": 25}
+
+// insert会直接覆盖原值，entry加上or_insert可以不覆盖更新。
+
+scores.entry(String::from("Yellow")).or_insert(50); // 原来有了yellow，不会覆盖
+scores.entry(String::from("green")).or_insert(50); // 原来没有，插入50
+
+println!("{:?}", scores); // {"green": 50, "Blue": 10, "Yellow": 25}
 ```
 
 # 错误处理
 
-Rust将错误分为两大类：可恢复的与不可恢复的。可恢复的例如文件未找到，此时我们更多的需要去新建文件或者重试。不可恢复的错误如访问一个超过数组末端位置，一般是需要立即停止程序。
+Rust将错误分为两大类：`可恢复的`与`不可恢复的`。可恢复的例如文件未找到，此时我们更多的是需要去新建文件或者重试，而不是终止程序。不可恢复的错误如访问一个超过数组末端位置，一般是需要立即停止程序。
 
 panic!宏是抛出不可恢复的错误。Rust用Result\<T,E\>来处理可恢复的错误。
 
@@ -453,7 +459,7 @@ fn read_username_from_file() -> Result<String, io::Error> {
 }
 ```
 
-**此处不太理解，为什么第一个match返回的是File，第二个可以返回Result<String, Error>，第一个match的Err分支必须加return，第二个match的Err分支可加return也可以不加**
+其实也就是返回Result\<T,E\>代替返回String，从而把问题抛给调用者
 
 因为模式固定，Rust提供了`?`运算符，上面的代码可以简写为：
 
@@ -480,5 +486,6 @@ fn read_username_from_file() -> Result<String, io::Error> {
 ```
 
 有意思的是，`?`运算符也可以用在Option\<T\>上，如果是None，则会提前抛出错误。
-
-* main函数不能用`?`，因为main函数应该返回`()`
+ 
+ 
+ **main函数不能用`?`，因为main函数应该返回`()`**
