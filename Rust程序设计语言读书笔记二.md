@@ -1,7 +1,7 @@
 ---
 title: Rust程序设计语言读书笔记二
 date: 2022-11-23 22:45:03
-tags: [笔记,Rust]
+tags: [读书笔记,Rust]
 ---
 
 # 使用包、Crate和模块
