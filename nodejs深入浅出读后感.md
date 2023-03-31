@@ -1,5 +1,5 @@
 ---
-title: 深入浅出Nodejs读书笔记
+title: 《深入浅出Nodejs》读书笔记
 date: 2021-07-13 00:06:00
 tags: [总结,Nodejs,读后感]
 ---
@@ -114,6 +114,37 @@ process.nextTick属于idle观察者，setImmediate属于check观察者。
 [最新的官方事件循环文档](https://nodejs.org/zh-cn/docs/guides/event-loop-timers-and-nexttick/)
 
 甚至有一篇文章直接指出本文是错的：[Node.js 事件循环-比官方更全面](https://learnku.com/articles/38802)
+
+**2023年3月15日更新**
+
+关于`setImmediate`与`process.nextTick`也许想多了，包括网上的文章也想多了。*setImmediate是宏任务、process.nextTick是微任务*。`process.nextTick`就肯定比`setImmediate`快。
+
+*setImmediate可以理解为一个不用设置timer的setTimeout。但是有一个特别的是，setImmediate的执行时机肯定比setTimeout慢，无论是有没有设置timer。*
+
+```javascript
+
+function foo() {
+  setImmediate(() => {
+    console.log('setImmediate')
+  })
+
+  setTimeout(() => {
+    console.log('setTimeout1')
+  })
+
+  process.nextTick(() => {
+    console.log('process.nextTicm')
+  })
+}
+
+foo();
+
+// λ node playground.js
+// process.nextTicm
+// setTimeout1
+// setImmediate	// setImmediate在setTimeout后面
+
+```
 
 ## 第四章：异步编程
 

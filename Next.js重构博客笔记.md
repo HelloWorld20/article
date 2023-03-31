@@ -6,7 +6,7 @@ tags: [笔记,Nextjs,tailwind]
 
 学习了Next.js后，打算用Next.js重构一波自己的博客。Next.js的图片优化、字体优化，SEO、core web vital等特性非常适合博客，所以打算重构一下。网上搜了一圈，没有合适的模板，所以以官网的[blog-starter](https://github.com/vercel/next.js/tree/canary/examples/blog-starter)模板来实现。一是为了使博客达到最佳性能，二也是可以学学Next.js这个优秀的框架。
 
-此偏文章是笔记的形式。主要是记录开发过程。可能会组织得比较乱。
+***笔记类型的文章，只记录关键的，不保证流畅的阅读体验***
 
 # todo
 

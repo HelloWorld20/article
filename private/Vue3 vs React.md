@@ -67,3 +67,12 @@ vue需要学习额外的知识，很多很多语法糖。
 
 ```
 
+Vue3的语法糖略多，需要背。比如definedProps就有几种写法，ref与reactive，存在功能重合。
+
+Vue3的自动解包有时候会让人迷惑，虽然有了TS，以及熟练度的提升，这个问题可以忽略
+
+Vue3的PascalCase命名方法会容易导致代码难以追踪
+
+自定义指令在某些场景实在是非常的优雅。如element-plus的v-loading。
+
+终于理解为什么React推崇imutable js
