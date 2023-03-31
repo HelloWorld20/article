@@ -433,3 +433,144 @@ impl<'a> ImportantExcerpt<'a> {
 let s: &'static str = "I have a static lifetime.";
 ```
 
+至此，基础语法基本告一段落！！！欢呼！！！！
+
+接下来一章说道自动化测试，与上下两章都比较独立。但由于下下章是一个完整的项目，是手把手写项目，与前面的语法书面介绍相差较远。所以把单元测试放在这一段。
+
+# 编写自动化测试
+
+相对来说不是很重要，快速过一遍
+
+要将一个函数变成测试函数，需要在fn行之前加上`#[test]`。当使用`cargo test`命令运行测试时，Rust会构建一个测试执行程序来调用标记了test属性的函数，并报告每一个测试是通过还是失败。
+
+```rust
+mod tests {
+    #[test]
+    fn it_works() {
+        assert_eq!(2 + 2, 4)
+    }
+}
+```
+
+运行cargo test，则会输出结果
+
+```shell
+running 1 test
+test tests::it_works ... ok
+```
+
+assert!宏由标准提供，用于测试条件是否为true
+assert_eq!来测试相等，assert_ne!来测试不相等。
+
+当我们需要更多的信息，
+
+```rust
+assert_eq!(2 + 2, 5, "更多的信息, {}", 3)
+```
+
+在接下来的参数加上就行，后面更多的参数还可以拼接字符串。其他同理。编辑器提醒很清晰
+
+## 使用should_panic检查panic
+
+有时需要检查代码按照期望处理错误也是必要的，那么就需要新增属性should_panic来实现
+
+```rust
+pub struct Guess {
+    value: i32,
+}
+
+impl Guess {
+    pub fn new(value: i32) -> Guess {
+        if value < 1 || value > 100 {
+            panic!("fail")
+        }
+        Guess { value }
+    }
+}
+
+mod tests {
+    use super::*;
+    #[test]
+    #[should_panic] // 没有这一段，就会报错，有这一段就会打印：should panic ... ok
+    #[should_panic(expected = "xxxxxxx")] // 期望panic打印xxxxxxx，但是实际打印的是fail，所以测试失败
+    fn greater_than_100() {
+        Guess::new(300);
+    }
+}
+```
+
+
+## 控制测试如何运行
+
+默认Rust使用线程来并行运行。这会很快。但是如果测试间互相影响。则需要控制线程数量
+
+```shell
+cargo test -- --test-threads=1
+```
+
+默认情况下，成功的测试会清除掉函数的输出，错误的测试才会把所有内容打印出来。如果成功的测试也要打印输出：
+
+```shell
+cargo test -- --show-output
+```
+
+有事运行所有测试会耗费很长时间，如要测试特定位置的代码，可以在cargo test后面接着函数的名称。任何名称匹配这个名称的测试都会被运行
+
+```rust
+pub fn add_two(a: i32) -> i32 {
+    a + 2
+}
+
+mod tests {
+    use super::*;
+    #[test]
+    fn add_two_and_two() {
+        assert_eq!(4, add_two(2))
+    }
+    #[test]
+    fn add_three_and_two() {
+        assert_eq!(5, add_two(3));
+    }
+    #[test]
+    fn one_hundred() {
+        assert_eq!(102, add_two(100));
+    }
+}
+```
+
+如上测试函数，运行不同的名称输出如下：
+
+```shell
+cargo test
+
+running 3 tests
+test tests::add_two_and_two ... ok
+test tests::one_hundred ... ok
+test tests::add_three_and_two ... ok
+
+cargo test one_hundred
+
+running 1 test
+test tests::one_hundred ... ok
+
+cargo test and_two
+
+running 2 tests
+test tests::add_three_and_two ... ok
+test tests::add_two_and_two ... ok
+```
+
+## 忽略某些测试
+
+加上`#[ignore]`属性即可。
+
+如果只希望运行被忽略的测试，则`cargo test -- --ignore`
+
+## \#[cfg(test)]
+
+\#[cfg(test)]注解告诉Rust只在cargo test时才编译运行测试代码。
+
+## 测试私有函数
+
+书中例子不太合适？后面再补充
+
